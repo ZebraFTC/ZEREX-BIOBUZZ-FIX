@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.AdrcController;
 import org.firstinspires.ftc.teamcode.Intake;
 import org.firstinspires.ftc.teamcode.Outtake;
 import org.firstinspires.ftc.teamcode.Turret;
-
+import org.firstinspires.ftc.teamcode.Transfer;
 import com.qualcomm.robotcore.hardware.CRServo;
 @TeleOp
 public class ZerexTeleFC extends LinearOpMode {
@@ -46,6 +46,7 @@ public class ZerexTeleFC extends LinearOpMode {
     Turret turret;
     Outtake shooter;
     Intake intake;
+    Transfer transfer;
     private GoBildaPinpointDriver pinpoint;
     private Limelight3A limelight;
     private boolean autoTargetEnabled = false;
@@ -71,7 +72,7 @@ public class ZerexTeleFC extends LinearOpMode {
         frontLeftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         limelight=hardwareMap.get(Limelight3A.class,"limelight");
-        limelight.pipelineSwitch(0);//april tag pipeline
+        limelight.pipelineSwitch(0);//april tag pipeline, http://limelight.local:5801
         // Instantiate separate independent math tracking loops for each corner
         adrcFL = new AdrcController(B0, OMEGA_O, OMEGA_C);
         adrcBL = new AdrcController(B0, OMEGA_O, OMEGA_C);
@@ -83,8 +84,13 @@ public class ZerexTeleFC extends LinearOpMode {
         pinpoint.resetPosAndIMU();
         limelight.start();
         DcMotor turnTableMotor = hardwareMap.get(DcMotor.class, "turnTable");
+        DcMotor TransferLeft = hardwareMap.get(DcMotor.class, "transferLeft");
+        DcMotor TransferRight = hardwareMap.get(DcMotor.class, "transferRight");
+        DcMotor Intake = hardwareMap.get(DcMotor.class, "intake");
         Servo TurretServo = hardwareMap.get(Servo.class, "turretServo");
         turret = new Turret(turnTableMotor,limelight,TurretServo);
+        transfer = new Transfer(TransferLeft, TransferRight);
+        intake= new Intake(Intake);
         turnTableMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turnTableMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         telemetry.addData("System Ready", "Press Play to Start. Toggle ADRC using Gamepad1 X.");
@@ -216,8 +222,10 @@ public class ZerexTeleFC extends LinearOpMode {
             // --- Intake ---
             if (gamepad2.right_trigger > 0.3) {
                 intake.intake();
+                transfer.transfer();
             } else {
                 intake.stop();
+                transfer.stop();
             }
             //intake reverse(a)
             if (gamepad2.a){
@@ -229,11 +237,19 @@ public class ZerexTeleFC extends LinearOpMode {
             //intake + transfer reverse(x)
             if (gamepad2.x){
                 intake.reverse();
+                transfer.reverse();
             }
             else{
                 intake.stop();
+                transfer.stop();
             }
             //transfer reverse(y)
+            if(gamepad2.y){
+                transfer.reverse();
+            }
+            else{
+                transfer.stop();
+            }
             telemetry.addData("ADRC Drive Mode Status", useAdrc ? "ACTIVE (X to disable)" : "DISABLED (X to enable)");
             telemetry.addData("Speed Mode Profile Modifier", speed);
             telemetry.addData("Heading Angle (Rad)", "%.2f", botHeading);
