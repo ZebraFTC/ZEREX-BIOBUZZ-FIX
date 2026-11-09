@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -82,7 +83,7 @@ public class ZerexTeleFC extends LinearOpMode {
         pinpoint.resetPosAndIMU();
         limelight.start();
         DcMotor turnTableMotor = hardwareMap.get(DcMotor.class, "turnTable");
-        CRServo TurretServo = hardwareMap.get(CRServo.class, "turretServo");
+        Servo TurretServo = hardwareMap.get(Servo.class, "turretServo");
         turret = new Turret(turnTableMotor,limelight,TurretServo);
         turnTableMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turnTableMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -192,14 +193,14 @@ public class ZerexTeleFC extends LinearOpMode {
                     turret.stop();
                 }
             }
-            if (gamepad2.right_stick_y<0.3){
-                turret.up();
+            if (gamepad2.dpad_up){
+                turret.top();
             }
-            else if (gamepad2.right_stick_y>0.3){
-                turret.down();
+            else if (gamepad2.dpad_left || gamepad2.dpad_right){
+                turret.middle();
             }
-            else{
-                turret.servoStop();
+            else if (gamepad2.dpad_down){
+                turret.bottom();
             }
 
             boolean currentRightBumperState = gamepad2.right_bumper;
@@ -218,21 +219,21 @@ public class ZerexTeleFC extends LinearOpMode {
             } else {
                 intake.stop();
             }
-            //intake reverse
+            //intake reverse(a)
             if (gamepad2.a){
                 intake.reverse();
             }
             else{
                 intake.stop();
             }
-            //intake + transfer reverse
+            //intake + transfer reverse(x)
             if (gamepad2.x){
                 intake.reverse();
             }
             else{
                 intake.stop();
             }
-
+            //transfer reverse(y)
             telemetry.addData("ADRC Drive Mode Status", useAdrc ? "ACTIVE (X to disable)" : "DISABLED (X to enable)");
             telemetry.addData("Speed Mode Profile Modifier", speed);
             telemetry.addData("Heading Angle (Rad)", "%.2f", botHeading);
