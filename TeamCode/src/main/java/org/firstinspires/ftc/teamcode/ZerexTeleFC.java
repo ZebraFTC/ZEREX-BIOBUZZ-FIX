@@ -84,12 +84,11 @@ public class ZerexTeleFC extends LinearOpMode {
         pinpoint.resetPosAndIMU();
         limelight.start();
         DcMotor turnTableMotor = hardwareMap.get(DcMotor.class, "turnTable");
-        DcMotor TransferLeft = hardwareMap.get(DcMotor.class, "transferLeft");
-        DcMotor TransferRight = hardwareMap.get(DcMotor.class, "transferRight");
+        DcMotor Transfer = hardwareMap.get(DcMotor.class, "transfer");
         DcMotor Intake = hardwareMap.get(DcMotor.class, "intake");
         Servo TurretServo = hardwareMap.get(Servo.class, "turretServo");
         turret = new Turret(turnTableMotor,limelight,TurretServo);
-        transfer = new Transfer(TransferLeft, TransferRight);
+        transfer = new Transfer(Transfer);
         intake= new Intake(Intake);
         turnTableMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turnTableMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
