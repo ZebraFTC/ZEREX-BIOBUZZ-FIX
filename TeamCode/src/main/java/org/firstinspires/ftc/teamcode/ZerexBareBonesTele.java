@@ -48,16 +48,17 @@ public class  ZerexBareBonesTele extends OpMode {
         frontRight = hardwareMap.dcMotor.get("frontRight");
         backRight = hardwareMap.dcMotor.get("backRight");
         backLeft = hardwareMap.dcMotor.get("backLeft");
-        DcMotor intakeMotor = hardwareMap.dcMotor.get("intake");
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         DcMotor turnTableMotor = hardwareMap.dcMotor.get("turnTable");
         DcMotor Transfer = hardwareMap.dcMotor.get("transfer");
         DcMotor Intake = hardwareMap.dcMotor.get("intake");
+        DcMotor Shooter = hardwareMap.dcMotor.get("shooter");
         Servo TurretServo = hardwareMap.servo.get("turretServo");
         turret = new Turret(turnTableMotor,limelight,TurretServo);
         transfer = new Transfer(Transfer);
         intake= new Intake(Intake);
+        shooter = new Outtake(Shooter);
         turnTableMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turnTableMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
